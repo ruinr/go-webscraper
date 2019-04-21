@@ -1,0 +1,128 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Web Scraper",
+    "version": "1.0",
+    "contact": {
+      "name": "Rui Ni",
+      "url": "https://github.com/rnidev/go-webscraper",
+      "email": "rui@devrni.com"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/amazon/product/asin/{asin}": {
+      "get": {
+        "summary": "This end point takes Amazon Product ASIN, and returns name, categories, ranks and dimensions",
+        "operationId": "GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "asin",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WebScraper"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1GetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/v1Product"
+        }
+      },
+      "title": "Expected Response From GetProduct"
+    },
+    "v1Product": {
+      "type": "object",
+      "properties": {
+        "asin": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "dimension": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProductCategory"
+          }
+        },
+        "ranks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProductRank"
+          }
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Project Object"
+    },
+    "v1ProductCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "ProjectCategoryObject"
+    },
+    "v1ProductRank": {
+      "type": "object",
+      "properties": {
+        "rank_info": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "ProjectRankObject"
+    }
+  }
+}
