@@ -1,0 +1,79 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+//Define option to generate REST gateway using swagger
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+	info: {
+		title: "Web Scraper";
+		version: "1.0";
+		contact: {
+			name: "Rui Ni";
+			url: "https://github.com/rnidev/go-webscraper";
+			email: "rui@devrni.com";
+    };
+  };
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+  security_definitions: {};
+  responses: {
+    key: "404";
+    value: {
+      description: "Returned when the resource does not exist.";
+      schema: {
+        json_schema: {
+          type: STRING;
+        }
+      }
+    }
+	}
+};
+
+//Project Object
+message Product {
+  string asin = 1;
+  string name = 2;
+  string dimension = 3;
+  repeated ProductCategory categories = 4;//A prodocut can have one main cateogry and multiple subcategories.
+  repeated ProductRank ranks = 5;
+  repeated string dimensions = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+//ProjectCategoryObject
+message ProductCategory {
+  string name = 1;
+  int64 level = 2;
+}
+//ProjectRankObject
+message ProductRank {
+  string rank_info = 1;
+  int64 level = 2;
+}
+/*
+  Request and response messages are named with the name of related
+  Remote Procedure Call (RPC) as prefix. They will be generated as
+  data struct contains data types expected for RPC handlers.
+*/
+//Expected Request For GetProduct
+message GetProductRequest {
+  string asin = 1;
+}
+//Expected Response From GetProduct
+message GetProductResponse {
+  Product product = 1;
+}
+
+
+//WebScraper contains a list of RPC services
+service WebScraper {
+  //This end point takes Amazon Product ASIN, and returns name, categories, ranks and dimensions
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse){
+    option (google.api.http) = {
+      get: "/v1/amazon/product/asin/{asin}",
+    };
+  };
+}
