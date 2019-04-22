@@ -1,1 +1,1 @@
-web: bin/scraperserver
+web: scraperserver
