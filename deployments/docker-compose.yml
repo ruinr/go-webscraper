@@ -1,9 +1,9 @@
 version: '3'
 services:
 
-  scraperserver:
-    container_name: scraperserver
-    image: scraperserver:latest
+  go-webscraper:
+    container_name: go-webscraper
+    image: go-webscraper:latest
     networks:
       - scrapernetwork
     links:

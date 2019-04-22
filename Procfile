@@ -1,1 +1,1 @@
-web: scraperserver
+web: go-webscraper

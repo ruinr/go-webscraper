@@ -4,7 +4,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOMOD=$(GOCMD) mod
-BINARY_NAME=scraperserver
+BINARY_NAME=go-webscraper
 BINARY_UNIX=$(BINARY_NAME)_unix
 
 .PHONY: clean
