@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -50,9 +51,12 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 	//Start product scraping
 	var scrapedProduct AmazonProduct
 	scrapedProduct.Asin = req.Asin
-	scrapedProduct.GetProductInfoByASIN()
-
-	if len(scrapedProduct.Name) > 0 {
+	res, err := scrapedProduct.GetProductInfoByASIN()
+	if err != nil {
+		fmt.Println("on error response: ", string(res.Body))
+		return &v1.GetProductResponse{}, err
+	}
+	if len(scrapedProduct.Categories) > 0 {
 		scrapedProduct.CreatedAt = time.Now().In(time.UTC).Format(time.RFC3339Nano)
 		err = StoreProduct(s.redisdb, &scrapedProduct)
 		if err != nil {

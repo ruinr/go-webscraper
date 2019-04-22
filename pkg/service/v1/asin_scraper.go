@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -18,7 +17,7 @@ type AmazonProduct struct {
 }
 
 //GetProductInfoByASIN takes asin, build target url, and returns product info
-func (product *AmazonProduct) GetProductInfoByASIN() {
+func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err error) {
 	//ToDo: Take domain as a request for Phase 2
 	domain := "www.amazon.com"
 	var productURL string
@@ -30,8 +29,9 @@ func (product *AmazonProduct) GetProductInfoByASIN() {
 	)
 
 	// Error Handling
-	c.OnError(func(r *colly.Response, err error) {
-		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	c.OnError(func(r *colly.Response, rerr error) {
+		res = r
+		err = rerr
 		return
 	})
 
@@ -154,4 +154,6 @@ func (product *AmazonProduct) GetProductInfoByASIN() {
 		})
 
 	c.Visit(productURL)
+
+	return
 }
