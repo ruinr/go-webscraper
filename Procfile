@@ -1,1 +1,1 @@
-web: go-webscraper
+web: bin/server
