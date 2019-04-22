@@ -14,7 +14,7 @@ import (
 type Config struct {
 	GRPCPort  string
 	RESTPort  string
-	RedisPort string
+	RedisHost string
 }
 
 // StartServer runs gRPC server and REST gateway
@@ -22,7 +22,7 @@ func StartServer(cfg *Config) error {
 	ctx := context.Background()
 
 	client := redis.NewClient(&redis.Options{
-		Addr:         ":" + cfg.RedisPort,
+		Addr:         cfg.RedisHost,
 		DialTimeout:  10 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,

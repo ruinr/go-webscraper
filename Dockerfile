@@ -17,4 +17,5 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /usr/bin/scraperserver ./cmd/server
 FROM alpine
 COPY --from=build-env /usr/bin/scraperserver /usr/bin/scraperserver
-ENTRYPOINT ["/usr/bin/scraperserver"]
+
+CMD ["/usr/bin/scraperserver","-redishost=redis:6379","-gatewayport=4000","-grpcport=3000"]

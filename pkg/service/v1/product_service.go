@@ -34,7 +34,7 @@ func StoreProduct(c *redis.Client, scrapedProduct *AmazonProduct) (err error) {
 	product["categories"] = strings.Join(scrapedProduct.Categories, ";")
 	product["ranks"] = strings.Join(scrapedProduct.Ranks, ";")
 	product["dimensions"] = strings.Join(scrapedProduct.Dimensions, ";")
-	product["created_at"] = time.Now().In(time.UTC).Format(time.RFC3339Nano)
+	product["created_at"] = scrapedProduct.CreatedAt
 
 	err = c.HMSet("product:"+scrapedProduct.Asin, product).Err()
 	if err != nil {

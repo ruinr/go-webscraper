@@ -48,6 +48,6 @@ func StartRESTGateWay(ctx context.Context, gRPCPort string, restPort string) err
 		_ = server.Shutdown(ctx)
 	}()
 
-	log.Println("starting REST gateway...")
+	log.Printf("starting REST gateway on port: %s ...", restPort)
 	return server.ListenAndServe()
 }

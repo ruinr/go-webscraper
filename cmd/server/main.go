@@ -9,14 +9,14 @@ import (
 )
 
 func main() {
-	redisPort := flag.String("redisport", "", "port redis listens to")
+	redisHost := flag.String("redishost", "", "host:port redis listens to")
 	gRPCPort := flag.String("grpcport", "", "port grpc listens to")
 	gatewayPort := flag.String("gatewayport", "", "port gateway listens to")
 	flag.Parse()
 
 	var cfg cmd.Config
 
-	cfg.RedisPort = *redisPort
+	cfg.RedisHost = *redisHost
 	cfg.GRPCPort = *gRPCPort
 	cfg.RESTPort = *gatewayPort
 

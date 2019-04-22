@@ -38,7 +38,9 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 	if err != nil && err != redis.Nil {
 		return nil, err
 	} else if cachedProduct.Name != "" {
+
 		product, err = mapProduct(&cachedProduct)
+
 		return &v1.GetProductResponse{
 			Product: &product,
 		}, nil
@@ -62,6 +64,7 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 	}
 
 	product, err = mapProduct(&scrapedProduct)
+
 	return &v1.GetProductResponse{
 		Product: &product,
 	}, err

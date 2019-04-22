@@ -35,6 +35,6 @@ func StartgRPCServer(ctx context.Context, srvHandler v1.WebScraperServer, port s
 	}()
 
 	// start scraper gRPC server
-	log.Println("starting scraper gRPC server...")
+	log.Printf("starting scraper gRPC server on port: %s ...", port)
 	return server.Serve(listen)
 }
