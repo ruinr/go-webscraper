@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  scraperserver:
+    container_name: scraperserver
+    image: scraperserver:latest
+    networks:
+      - scrapernetwork
+    links:
+      - redis
+    ports:
+      - 3000:3000
+      - 4000:4000
+
+  redis:
+    image: redis:alpine
+    networks:
+      - scrapernetwork
+    ports:
+      - 6379:6379
+
+networks:
+  scrapernetwork:
