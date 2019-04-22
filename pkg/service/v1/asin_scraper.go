@@ -9,11 +9,12 @@ import (
 
 //AmazonProduct is the default product struct for ASIN service
 type AmazonProduct struct {
-	ASIN       string
-	Name       string
-	Categories []string
-	Ranks      []string
-	Dimensions []string
+	Asin       string   `json:"asin"`
+	Name       string   `json:"name"`
+	Categories []string `json:"categories"`
+	Ranks      []string `json:"ranks"`
+	Dimensions []string `json:"dimensions"`
+	CreatedAt  string   `json:"created_at"`
 }
 
 //GetProductInfoByASIN takes asin, build target url, and returns product info
@@ -21,7 +22,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() {
 	//ToDo: Take domain as a request for Phrase 2
 	domain := "www.amazon.com"
 	var productURL string
-	productURL = "https://" + domain + "/dp/" + product.ASIN
+	productURL = "https://" + domain + "/dp/" + product.Asin
 	// Instantiate default collector
 	c := colly.NewCollector(
 		//Only allow whitelisted domains to be visited
