@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"html"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -47,13 +48,13 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 		func(e *colly.HTMLElement) {
 			category := e.ChildText(".a-link-normal")
 			if category != "" {
-				product.Categories = append(product.Categories, category)
+				product.Categories = append(product.Categories, html.UnescapeString(category))
 			}
 		})
 
 	c.OnHTML("#titleSection h1#title",
 		func(e *colly.HTMLElement) {
-			product.Name = e.ChildText("span#productTitle")
+			product.Name = html.UnescapeString(e.ChildText("span#productTitle"))
 		})
 
 	//There are three different layouts for product details: Ranks and Dimensions
@@ -66,7 +67,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	c.OnHTML("#prodDetails .wrapper .col1 .techD .content .attrG .pdTab table tbody tr",
 		func(e *colly.HTMLElement) {
 			if e.ChildText("td[class=label]") == "Product Dimensions" {
-				product.Dimensions = strings.Split(e.ChildText("td[class=value]"), ";")
+				product.Dimensions = strings.Split(html.UnescapeString(e.ChildText("td[class=value]")), ";")
 			}
 		})
 
@@ -76,7 +77,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			result := strings.TrimSpace(e.Text)
 			results := strings.Split(result, " (")
 			if len(results) > 0 {
-				product.Ranks = append(product.Ranks, results[0])
+				product.Ranks = append(product.Ranks, html.UnescapeString(results[0]))
 			}
 		})
 
@@ -86,7 +87,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			subRank := e.ChildText("span.zg_hrsr_rank")
 			subCategory := e.ChildText("span.zg_hrsr_ladder")
 			if subRank != "" && subCategory != "" {
-				product.Ranks = append(product.Ranks, strings.Replace(subRank+" "+subCategory, "\u00a0", " ", -1))
+				product.Ranks = append(product.Ranks, html.UnescapeString(subRank+" "+subCategory))
 			}
 		})
 
@@ -99,10 +100,10 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			results := strings.Split(result, ":")
 			var mainRank string
 			if len(results) > 1 {
-				mainRank = strings.TrimSpace(strings.Split(results[1], "(")[0])
+				mainRank = html.UnescapeString(strings.TrimSpace(strings.Split(results[1], "(")[0]))
 			}
 			if len(mainRank) > 1 {
-				product.Ranks = append(product.Ranks, mainRank)
+				product.Ranks = append(product.Ranks, html.UnescapeString(mainRank))
 			}
 		})
 
@@ -113,10 +114,10 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			results := strings.Split(result, ":")
 			var mainRank string
 			if len(results) > 1 {
-				mainRank = strings.TrimSpace(strings.Split(results[1], "(")[0])
+				mainRank = html.UnescapeString(strings.TrimSpace(strings.Split(results[1], "(")[0]))
 			}
 			if len(mainRank) > 1 {
-				product.Ranks = append(product.Ranks, mainRank)
+				product.Ranks = append(product.Ranks, html.UnescapeString(mainRank))
 			}
 		})
 
@@ -126,7 +127,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			subRank := e.ChildText("span.zg_hrsr_rank")
 			subCategory := e.ChildText("span.zg_hrsr_ladder")
 			if subRank != "" && subCategory != "" {
-				product.Ranks = append(product.Ranks, strings.Replace(subRank+" "+subCategory, "\u00a0", " ", -1))
+				product.Ranks = append(product.Ranks, html.UnescapeString(subRank+" "+subCategory))
 			}
 		})
 
@@ -137,7 +138,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			if e.ChildText("b") == "Product Dimensions:" {
 				results := strings.Split(e.Text, ":")
 				if len(results) > 1 {
-					product.Dimensions = strings.Split(strings.TrimSpace(results[1]), ";")
+					product.Dimensions = strings.Split(html.UnescapeString(strings.TrimSpace(results[1])), ";")
 				}
 			}
 		})
@@ -148,7 +149,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			if e.ChildText("span.a-text-bold") == "Product Dimensions:" {
 				results := strings.Split(e.Text, ":")
 				if len(results) > 1 {
-					product.Dimensions = strings.Split(strings.TrimSpace(results[1]), ";")
+					product.Dimensions = strings.Split(html.UnescapeString(strings.TrimSpace(results[1])), ";")
 				}
 			}
 		})
