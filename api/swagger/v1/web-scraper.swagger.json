@@ -70,9 +70,6 @@
         "name": {
           "type": "string"
         },
-        "dimension": {
-          "type": "string"
-        },
         "categories": {
           "type": "array",
           "items": {
