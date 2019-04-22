@@ -19,7 +19,7 @@ type AmazonProduct struct {
 
 //GetProductInfoByASIN takes asin, build target url, and returns product info
 func (product *AmazonProduct) GetProductInfoByASIN() {
-	//ToDo: Take domain as a request for Phrase 2
+	//ToDo: Take domain as a request for Phase 2
 	domain := "www.amazon.com"
 	var productURL string
 	productURL = "https://" + domain + "/dp/" + product.Asin
@@ -50,6 +50,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() {
 				product.Categories = append(product.Categories, category)
 			}
 		})
+
 	c.OnHTML("#titleSection h1#title",
 		func(e *colly.HTMLElement) {
 			product.Name = e.ChildText("span#productTitle")
@@ -93,6 +94,20 @@ func (product *AmazonProduct) GetProductInfoByASIN() {
 
 	//Target: Prodcut Main Rank
 	c.OnHTML("#dpx-amazon-sales-rank_feature_div",
+		func(e *colly.HTMLElement) {
+			result := e.ChildText("li#SalesRank")
+			results := strings.Split(result, ":")
+			var mainRank string
+			if len(results) > 1 {
+				mainRank = strings.TrimSpace(strings.Split(results[1], "(")[0])
+			}
+			if len(mainRank) > 1 {
+				product.Ranks = append(product.Ranks, mainRank)
+			}
+		})
+
+	// Try another bullet view for main rank
+	c.OnHTML("#detail-bullets table tbody tr .bucket .content ul",
 		func(e *colly.HTMLElement) {
 			result := e.ChildText("li#SalesRank")
 			results := strings.Split(result, ":")
