@@ -30,17 +30,18 @@ func NewScraperServer(client *redis.Client) v1.WebScraperServer {
 func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductRequest) (*v1.GetProductResponse, error) {
 	//validation
 	if req.Asin == "" {
-		return nil, ErrMissingASIN
+		return &v1.GetProductResponse{}, ErrMissingASIN
 	}
 	//Get a new redis client with context
 	var product v1.Product
 	cachedProduct, err := GetProductFromCache(s.redisdb, req.Asin)
 	if err != nil && err != redis.Nil {
-		return nil, err
+		return &v1.GetProductResponse{}, err
 	} else if cachedProduct.Name != "" {
-
 		product, err = mapProduct(&cachedProduct)
-
+		if err != nil {
+			return &v1.GetProductResponse{}, err
+		}
 		return &v1.GetProductResponse{
 			Product: &product,
 		}, nil
@@ -55,11 +56,11 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 		scrapedProduct.CreatedAt = time.Now().In(time.UTC).Format(time.RFC3339Nano)
 		err = StoreProduct(s.redisdb, &scrapedProduct)
 		if err != nil {
-			return nil, err
+			return &v1.GetProductResponse{}, err
 		}
 		err = AddProductToCache(s.redisdb, &scrapedProduct, defaultTTL)
 		if err != nil {
-			return nil, err
+			return &v1.GetProductResponse{}, err
 		}
 	}
 
