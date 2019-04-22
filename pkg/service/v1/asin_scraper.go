@@ -97,7 +97,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	//Target: Prodcut Main Rank
 	c.OnHTML("#dpx-amazon-sales-rank_feature_div",
 		func(e *colly.HTMLElement) {
-			result := html.UnescapeString(e.ChildText("li#SalesRank")
+			result := html.UnescapeString(e.ChildText("li#SalesRank"))
 			resultSlice := strings.Split(result, ":")
 			var mainRank string
 			if len(resultSlice) > 1 {
@@ -114,7 +114,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 			result := html.UnescapeString(e.ChildText("li#SalesRank"))
 			resultSlice := strings.Split(result, ":")
 			var mainRank string
-			if len(results) > 1 {
+			if len(resultSlice) > 1 {
 				mainRank = strings.TrimSpace(strings.Split(resultSlice[1], "(")[0])
 			}
 			if len(mainRank) > 1 {
