@@ -12,21 +12,17 @@ Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/as
 Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG
 
 ## Development
-Requirement
+### Requirement
+- Golang 1.11.x
+- Redis 5.0 (stable)
+- Docker (>= 17.12.0)
+- Curl or Postman
 
-Golang 1.11.x
-
-Redis 5.0 (stable)
-
-Docker (>= 17.12.0)
-
-Curl or Postman
-
-REST API endpoint:
+### REST API endpoint:
 ```
 GET /v1/amazon/product/asin/{asin}
 ```
-Default config info
+### Default config info
 ```
 -redispassord=""
 -redishost=:6379
