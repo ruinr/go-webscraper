@@ -5,12 +5,11 @@ import (
 	"errors"
 	"time"
 
-	"go.uber.org/zap"
-
 	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/ptypes"
 	v1 "github.com/rnidev/go-webscraper/pkg/api/v1"
 	"github.com/rnidev/go-webscraper/pkg/logger"
+	"go.uber.org/zap"
 )
 
 type webScraperServer struct {
@@ -38,34 +37,45 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 	//Get a new redis client with context
 	var product v1.Product
 	cachedProduct, err := GetProductFromCache(s.redisdb, req.Asin)
+
+	// ignore redis.Nil for error return.
+	// It means there is not existing key for cachedProduct,
 	if err != nil && err != redis.Nil {
 		return &v1.GetProductResponse{}, err
-	} else if cachedProduct.Name != "" {
+	}
+	// Found cached product
+	if cachedProduct.Name != "" {
 		product, err = mapProduct(&cachedProduct)
+
 		if err != nil {
 			return &v1.GetProductResponse{}, err
 		}
+
 		return &v1.GetProductResponse{
 			Product: &product,
 		}, nil
 	}
 
-	//Start product scraping
+	//No cached product found, start product scraping
 	var scrapedProduct AmazonProduct
 	scrapedProduct.Asin = req.Asin
 	res, err := scrapedProduct.GetProductInfoByASIN()
 
 	if err != nil {
-		logger.Log.Info("on error response: ", zap.String("error:", string(res.Body)))
+		//if something wrong with scraper service, we want to see the response
+		logger.Log.Info("", zap.String("response:", string(res.Body)))
 		return &v1.GetProductResponse{}, err
 	}
 
-	if len(scrapedProduct.Categories) > 0 {
+	// Successfuly scraped product
+	if len(scrapedProduct.Name) > 0 {
 		scrapedProduct.CreatedAt = time.Now().In(time.UTC).Format(time.RFC3339Nano)
+		//Save product to Redis as in-memory database
 		err = StoreProduct(s.redisdb, &scrapedProduct)
 		if err != nil {
 			return &v1.GetProductResponse{}, err
 		}
+		//Add product to cache for default time to live
 		err = AddProductToCache(s.redisdb, &scrapedProduct, defaultTTL)
 		if err != nil {
 			return &v1.GetProductResponse{}, err
@@ -99,13 +109,10 @@ func mapProduct(scrapedProduct *AmazonProduct) (product v1.Product, err error) {
 
 	product.Dimensions = scrapedProduct.Dimensions
 
-	t, err := time.Parse(time.RFC3339Nano, scrapedProduct.CreatedAt)
-	if err != nil {
-		return
-	}
-	product.CreatedAt, err = ptypes.TimestampProto(t)
-	if err != nil {
-		return
+	if scrapedProduct.CreatedAt != "" {
+		var t time.Time
+		t, err = time.Parse(time.RFC3339Nano, scrapedProduct.CreatedAt)
+		product.CreatedAt, err = ptypes.TimestampProto(t)
 	}
 
 	return
