@@ -3,7 +3,7 @@ FROM golang:1.12.3-alpine3.9 as build-env
 RUN apk update
 RUN apk add git make
 
-WORKDIR /
+WORKDIR /server
 COPY / $GOPATH/github.com/rnidev/go-webscraper
 
 COPY go.mod .
