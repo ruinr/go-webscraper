@@ -8,7 +8,7 @@ Development Thought Process
 - [x] Display the data on the front-end
 
 ### Questions need to be answered:
-- What were the biggest challenges you faced in writing the challenge?
+#### 1. What were the biggest challenges you faced in writing the challenge?
   The biggest challenge is probably to think about how to get this challenge done properly based on requirement and information I know. It means a lot of researching, analyzing, learning, and planning for data structure, technologies, tools, languages, libraries/gems/packages, etc. It is always time-consuming and challenging to make the right decision on these.
 
   The biggest technical challenge is probably writing the scraping service to get product data. It is mainly because I don't often do web crawler or scraper. In order to make this script work for most cases, I had to go back and forth to
@@ -21,7 +21,7 @@ Development Thought Process
 
   And I haven't figure out a proper way to test the scraping script yet. The only way I can think of right now is to download the HTML source file for the different layout I have seen, and test against them.
 
-- Can you explain your thought process on how you solved the problem, and what iterations you went through to get to this solution?
+#### 2. Can you explain your thought process on how you solved the problem, and what iterations you went through to get to this solution?
   Almost all of my thought processes are documented below. There are two problems I did not document.
   - HTML entities inside a scraped string
     1. I tried HTML.UnescapeString(), but it doesn't convert everything
@@ -33,12 +33,12 @@ Development Thought Process
     2. After checking diffs, I didn't find anything weird or wrong. Then did some tests locally find out it works sometimes.
     3. Then I checked the on error response from Amazon. I found it sometimes returns "something wrong on our end please try again" and sometimes returns bot detected message. Then I realized that I didn't set user-agent for scraper
 
-- If you had to scale this application to handle millions of people adding in ASIN's in a given day, what considerations would you make?
+#### 3. If you had to scale this application to handle millions of people adding in ASIN's in a given day, what considerations would you make?
   1. Load balancer for both frontend and backend, and more copies of the application
   2. Improve caching solution and caching size
   3. Find the slow parts and improve them, which need to do benchmark
 
-- Why did you choose the technologies you used?
+#### 4. Why did you choose the technologies you used?
   All the choices are explained below including approach, language, framework, database and API structure.
 
 ## Plan & Analysis
