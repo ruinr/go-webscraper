@@ -3,12 +3,14 @@ package v1
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
+
+	"go.uber.org/zap"
 
 	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/ptypes"
 	v1 "github.com/rnidev/go-webscraper/pkg/api/v1"
+	"github.com/rnidev/go-webscraper/pkg/logger"
 )
 
 type webScraperServer struct {
@@ -52,10 +54,12 @@ func (s *webScraperServer) GetProduct(ctx context.Context, req *v1.GetProductReq
 	var scrapedProduct AmazonProduct
 	scrapedProduct.Asin = req.Asin
 	res, err := scrapedProduct.GetProductInfoByASIN()
+
 	if err != nil {
-		fmt.Println("on error response: ", string(res.Body))
+		logger.Log.Info("on error response: ", zap.String("error:", string(res.Body)))
 		return &v1.GetProductResponse{}, err
 	}
+
 	if len(scrapedProduct.Categories) > 0 {
 		scrapedProduct.CreatedAt = time.Now().In(time.UTC).Format(time.RFC3339Nano)
 		err = StoreProduct(s.redisdb, &scrapedProduct)

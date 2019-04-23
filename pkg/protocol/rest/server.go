@@ -2,16 +2,17 @@ package rest
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	v1 "github.com/rnidev/go-webscraper/pkg/api/v1"
+	"github.com/rnidev/go-webscraper/pkg/logger"
 )
 
 // StartRESTGateWay runs REST gateway for gRPC server
@@ -24,7 +25,7 @@ func StartRESTGateWay(ctx context.Context, gRPCPort string, restPort string) err
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	//register gRPC endpoint
 	if err := v1.RegisterWebScraperHandlerFromEndpoint(ctx, mux, "localhost:"+gRPCPort, opts); err != nil {
-		log.Fatalf("failed to start scraper REST gateway: %v", err)
+		logger.Log.Fatal("failed to start scraper REST gateway", zap.String("error", err.Error()))
 	}
 
 	server := &http.Server{
@@ -37,7 +38,7 @@ func StartRESTGateWay(ctx context.Context, gRPCPort string, restPort string) err
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for range c {
-			log.Println("shutting down scraper REST gateway...")
+			logger.Log.Warn("shutting down scraper REST gateway...")
 			server.Shutdown(ctx)
 			<-ctx.Done()
 		}
@@ -48,6 +49,7 @@ func StartRESTGateWay(ctx context.Context, gRPCPort string, restPort string) err
 		_ = server.Shutdown(ctx)
 	}()
 
-	log.Printf("starting REST gateway on port: %s ...", restPort)
+	logger.Log.Info("starting REST gateway", zap.String("port:", restPort))
+
 	return server.ListenAndServe()
 }
