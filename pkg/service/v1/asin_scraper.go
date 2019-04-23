@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"html"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -27,6 +26,8 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	c := colly.NewCollector(
 		//Only allow whitelisted domains to be visited
 		colly.AllowedDomains(domain),
+		//Add Request Header
+		colly.UserAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"),
 	)
 
 	// Error Handling
@@ -46,15 +47,17 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	*/
 	c.OnHTML("#wayfinding-breadcrumbs_feature_div ul li span.a-list-item",
 		func(e *colly.HTMLElement) {
-			category := html.UnescapeString(e.ChildText(".a-link-normal"))
+			category := e.ChildText(".a-link-normal")
 			if category != "" {
+				category = ConvertHTMLEntities(category)
 				product.Categories = append(product.Categories, category)
 			}
 		})
 
 	c.OnHTML("#titleSection h1#title",
 		func(e *colly.HTMLElement) {
-			product.Name = html.UnescapeString(e.ChildText("span#productTitle"))
+			productName := ConvertHTMLEntities(e.ChildText("span#productTitle"))
+			product.Name = productName
 		})
 
 	//There are three different layouts for product details: Ranks and Dimensions
@@ -67,7 +70,8 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	c.OnHTML("#prodDetails .wrapper .col1 .techD .content .attrG .pdTab table tbody tr",
 		func(e *colly.HTMLElement) {
 			if e.ChildText("td[class=label]") == "Product Dimensions" {
-				dimensions := html.UnescapeString(e.ChildText("td[class=value]"))
+				dimensions := e.ChildText("td[class=value]")
+				dimensions = ConvertHTMLEntities(dimensions)
 				product.Dimensions = strings.Split(dimensions, ";")
 			}
 		})
@@ -75,20 +79,24 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	//Target: Product Main Rank
 	c.OnHTML("#SalesRank td[class=value]",
 		func(e *colly.HTMLElement) {
-			result := html.UnescapeString(e.Text)
+			result := e.Text
 			resultSlice := strings.Split(strings.TrimSpace(result), "(")
 			if len(resultSlice) > 0 {
-				product.Ranks = append(product.Ranks, resultSlice[0])
+				mainRank := resultSlice[0]
+				mainRank = ConvertHTMLEntities(mainRank)
+				product.Ranks = append(product.Ranks, mainRank)
 			}
 		})
 
 	//Target: Product Subcategory Ranks
 	c.OnHTML("#SalesRank td[class=value] ul.zg_hrsr li.zg_hrsr_item",
 		func(e *colly.HTMLElement) {
-			subRank := html.UnescapeString(e.ChildText("span.zg_hrsr_rank"))
-			subCategory := html.UnescapeString(e.ChildText("span.zg_hrsr_ladder"))
+			subRank := e.ChildText("span.zg_hrsr_rank")
+			subCategory := e.ChildText("span.zg_hrsr_ladder")
 			if subRank != "" && subCategory != "" {
-				product.Ranks = append(product.Ranks, subRank+" "+subCategory)
+				rank := subRank + " " + subCategory
+				rank = ConvertHTMLEntities(rank)
+				product.Ranks = append(product.Ranks, rank)
 			}
 		})
 
@@ -97,13 +105,14 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	//Target: Prodcut Main Rank
 	c.OnHTML("#dpx-amazon-sales-rank_feature_div",
 		func(e *colly.HTMLElement) {
-			result := html.UnescapeString(e.ChildText("li#SalesRank"))
+			result := e.ChildText("li#SalesRank")
 			resultSlice := strings.Split(result, ":")
 			var mainRank string
 			if len(resultSlice) > 1 {
 				mainRank = strings.TrimSpace(strings.Split(resultSlice[1], "(")[0])
 			}
 			if len(mainRank) > 1 {
+				mainRank = ConvertHTMLEntities(mainRank)
 				product.Ranks = append(product.Ranks, mainRank)
 			}
 		})
@@ -111,13 +120,14 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	// Try another bullet view for main rank
 	c.OnHTML("#detail-bullets table tbody tr .bucket .content ul",
 		func(e *colly.HTMLElement) {
-			result := html.UnescapeString(e.ChildText("li#SalesRank"))
+			result := e.ChildText("li#SalesRank")
 			resultSlice := strings.Split(result, ":")
 			var mainRank string
 			if len(resultSlice) > 1 {
 				mainRank = strings.TrimSpace(strings.Split(resultSlice[1], "(")[0])
 			}
 			if len(mainRank) > 1 {
+				mainRank = ConvertHTMLEntities(mainRank)
 				product.Ranks = append(product.Ranks, mainRank)
 			}
 		})
@@ -125,10 +135,12 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	//Target: Ranks in subcategories
 	c.OnHTML("li#SalesRank ul.zg_hrsr li.zg_hrsr_item",
 		func(e *colly.HTMLElement) {
-			subRank := html.UnescapeString(e.ChildText("span.zg_hrsr_rank"))
-			subCategory := html.UnescapeString(e.ChildText("span.zg_hrsr_ladder"))
+			subRank := e.ChildText("span.zg_hrsr_rank")
+			subCategory := e.ChildText("span.zg_hrsr_ladder")
 			if subRank != "" && subCategory != "" {
-				product.Ranks = append(product.Ranks, subRank+" "+subCategory)
+				rank := subRank + " " + subCategory
+				rank = ConvertHTMLEntities(rank)
+				product.Ranks = append(product.Ranks, rank)
 			}
 		})
 
@@ -137,10 +149,12 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 		func(e *colly.HTMLElement) {
 			//Target: Product Dimensions
 			if e.ChildText("b") == "Product Dimensions:" {
-				result := html.UnescapeString(e.Text)
+				result := e.Text
 				resultSlice := strings.Split(result, ":")
 				if len(resultSlice) > 1 {
-					product.Dimensions = strings.Split(strings.TrimSpace(resultSlice[1]), ";")
+					dimensions := strings.TrimSpace(resultSlice[1])
+					dimensions = ConvertHTMLEntities(dimensions)
+					product.Dimensions = strings.Split(dimensions, ";")
 				}
 			}
 		})
@@ -149,10 +163,12 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	c.OnHTML("#detailBullets_feature_div ul li span",
 		func(e *colly.HTMLElement) {
 			if e.ChildText("span.a-text-bold") == "Product Dimensions:" {
-				result := html.UnescapeString(e.Text)
+				result := e.Text
 				resultSlice := strings.Split(result, ":")
 				if len(resultSlice) > 1 {
-					product.Dimensions = strings.Split(strings.TrimSpace(resultSlice[1]), ";")
+					dimensions := strings.TrimSpace(resultSlice[1])
+					dimensions = ConvertHTMLEntities(dimensions)
+					product.Dimensions = strings.Split(dimensions, ";")
 				}
 			}
 		})
