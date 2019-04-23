@@ -25,6 +25,11 @@ Default config info
 ```
 
 ## Examples
+Test with PostMan
+```
+GET https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG
+```
+
 Expected Product Info in JSON
 ```JSON
 {
