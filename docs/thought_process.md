@@ -63,7 +63,9 @@ Development Thought Process
 ### 3. What is the language I know best for Web Scraping?
 
   Python: Probably the first choice for many and the most popular one. However, I am still learning Python.
+  
   PHP: I haven't really developed in PHP for a while, so probably not a good choice to do this challenge.
+  
   Ruby vs. Golang: I choose Golang
 
   - Pros:
