@@ -3,13 +3,18 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rnidev/go-webscraper)](https://goreportcard.com/report/github.com/rnidev/go-webscraper)
 [![Build Status](https://travis-ci.org/rnidev/go-webscraper.svg?branch=master)](https://travis-ci.org/rnidev/go-webscraper)
 
-## Live Demo
+## Live Demo(no longer work, blocked by Amazon)
 
-Heroku Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/{ASIN}
+~~Heroku Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/{ASIN}~~
 
-Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B01644OCVS
+~~Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B01644OCVS~~
 
-Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG
+~~Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG~~
+
+Please try local with curl
+```
+curl -H "Content-Type: application/json" -v http://localhost:4000/v1/amazon/product/asin/B00D89VK3Q
+```
 
 ## Development
 ### Requirement
