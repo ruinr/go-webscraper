@@ -168,7 +168,7 @@ LET'S ROCK!!!!
   - ~~Scaped product info can be returned as JSON to API call~~
   - ~~A basic cache for storing scraped product~~
   - ~~Basic testing for services~~
-  - ~~A successfully built docker image~~~
+  - ~~A successfully built docker image~~
   - ~~A working live demo for API call~~
 
 ### Phase two
