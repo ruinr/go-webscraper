@@ -5,11 +5,11 @@
 
 ## Live Demo(no longer work, blocked by Amazon)
 
-~~Heroku Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/{ASIN}~~
+Heroku Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/{ASIN}
 
-~~Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B01644OCVS~~
+Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B01644OCVS
 
-~~Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG~~
+Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG
 
 Please try local with curl
 ```
