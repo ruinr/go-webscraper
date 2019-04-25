@@ -15,6 +15,8 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.8.5
+	github.com/juju/go4 v0.0.0-20160222163258-40d72ab9641a // indirect
+	github.com/juju/persistent-cookiejar v0.0.0-20171026135701-d5e5a8405ef9 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
@@ -28,4 +30,6 @@ require (
 	go.uber.org/zap v1.9.1
 	google.golang.org/genproto v0.0.0-20190418145605-e7d98fc518a7
 	google.golang.org/grpc v1.20.1
+	gopkg.in/errgo.v1 v1.0.1 // indirect
+	gopkg.in/retry.v1 v1.0.2 // indirect
 )
