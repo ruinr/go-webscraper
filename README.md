@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rnidev/go-webscraper)](https://goreportcard.com/report/github.com/rnidev/go-webscraper)
 [![Build Status](https://travis-ci.org/rnidev/go-webscraper.svg?branch=master)](https://travis-ci.org/rnidev/go-webscraper)
 
-## Live Demo(no longer work, blocked by Amazon)
+## Live Demo(it works again after some bot detection improvement)
 
 Heroku Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/{ASIN}
 
@@ -11,7 +11,7 @@ Table View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/as
 
 Bullet View Sample Link: https://go-webscraper.herokuapp.com/v1/amazon/product/asin/B004QWYCVG
 
-Please try local with curl
+If live demo doesn't work, please try local with curl. This is an example with default config.
 ```
 curl -H "Content-Type: application/json" -v http://localhost:4000/v1/amazon/product/asin/B00D89VK3Q
 ```
