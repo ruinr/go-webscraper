@@ -6,7 +6,6 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/extensions"
-	cookiejar "github.com/juju/persistent-cookiejar"
 )
 
 //AmazonProduct is the default product struct for ASIN service
@@ -32,9 +31,10 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 		colly.Async(true),
 	)
 
-	j, err := cookiejar.New(&cookiejar.Options{Filename: "cookie.db"})
-	if err == nil {
-		c.SetCookieJar(j)
+	cookie := c.Cookies(productURL)
+	err = c.SetCookies(productURL, cookie)
+	if err != nil {
+		return
 	}
 	//Randomize useragent to avoid bot detection
 	extensions.RandomUserAgent(c)
