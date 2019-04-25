@@ -2,8 +2,10 @@ package v1
 
 import (
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/extensions"
 )
 
 //AmazonProduct is the default product struct for ASIN service
@@ -26,9 +28,19 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 	c := colly.NewCollector(
 		//Only allow whitelisted domains to be visited
 		colly.AllowedDomains(domain),
-		//Add Request Header
-		colly.UserAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"),
+		colly.Async(true),
 	)
+	//Randomize useragent to avoid bot detection
+	extensions.RandomUserAgent(c)
+	// Limit the number of threads started by colly to two
+	// To avoid bot detection
+	// when visiting links which domains' matches "*amazon.*" glob
+	// Set random redlay to 2 secs
+	c.Limit(&colly.LimitRule{
+		DomainGlob:  "*amazon.*",
+		Parallelism: 2,
+		Delay:       2 * time.Second,
+	})
 
 	// Error Handling
 	c.OnError(func(r *colly.Response, rerr error) {
@@ -174,6 +186,7 @@ func (product *AmazonProduct) GetProductInfoByASIN() (res *colly.Response, err e
 		})
 
 	c.Visit(productURL)
-
+	//Wait for collector to finish
+	c.Wait()
 	return
 }
