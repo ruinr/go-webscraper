@@ -20,6 +20,15 @@ Development Thought Process
   - ...
 
   And I haven't figure out a proper way to test the scraping script yet. The only way I can think of right now is to download the HTML source file for the different layout I have seen, and test against them.
+  
+  Ok. So...after some setbacks by bot detection, now I think the biggest challenge is avoid bot detection. This is actually the key for all web scraping. Stable is first, then performance. Lesson learned in a hard way! I researched some possible solutions to lower the chance of being detected.
+  1. Proxy Switcher
+  2. Slow down
+  3. Change user-agent
+  4. Cookies
+  5. Random request header
+  
+  I added random delay for slowing down, set cookies, and randomize user-agent. I haven't figured out how to switch proxy on heroku and how to correctly randomize request header yet.
 
 #### 2. Can you explain your thought process on how you solved the problem, and what iterations you went through to get to this solution?
   Almost all of my thought processes are documented below. There are two problems I did not document.
